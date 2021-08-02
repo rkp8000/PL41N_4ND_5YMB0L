@@ -78,6 +78,31 @@ def mv_avg(t, x, wdw):
     return x_avg
 
 
+def argmax_nd(arr):
+    return np.unravel_index(arr.argmax(), arr.shape)
+
+
+def sparse_hist_nd(r, bins):
+    """
+    Compute histogram with sparsely filled bins. Bins should be evenly spaced
+    r: N x D array
+    bins: 1-D array
+    """
+    dr = np.mean(np.diff(bins))
+    nbin = len(bins)
+    
+    # convert rs to bin idxs
+    ir = np.floor(r/dr).astype(int)
+    
+    ir[ir < 0] = 0
+    ir[ir >= nbin] = nbin-1
+    
+    # count unique bin idxs
+    labels, cts = np.unique(ir, axis=0, return_counts=True)
+    
+    return cts, labels
+
+
 def loadmat_h5(file_name):
     '''Loadmat equivalent for -v7.3 or greater .mat files, which break scipy.io.loadmat'''
     
